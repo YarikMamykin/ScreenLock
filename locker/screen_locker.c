@@ -19,17 +19,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include "arg.h"
-#include "util.h"
+#include <util.h>
+#include <config.h>
 
 char *argv0;
-
-enum {
-	INIT,
-	INPUT,
-	FAILED,
-	NUMCOLS
-};
 
 struct lock {
 	int screen;
@@ -38,15 +31,8 @@ struct lock {
 	unsigned long colors[NUMCOLS];
 };
 
-struct xrandr {
-	int active;
-	int evbase;
-	int errbase;
-};
 
-#include "config.h"
-
-static void
+void
 die(const char *errstr, ...)
 {
 	va_list ap;
@@ -61,7 +47,7 @@ die(const char *errstr, ...)
 #include <fcntl.h>
 #include <linux/oom.h>
 
-static void
+void
 dontkillme(void)
 {
 	FILE *f;
@@ -83,7 +69,7 @@ dontkillme(void)
 }
 #endif
 
-static const char *
+const char *
 gethash(void)
 {
 	const char *hash;
@@ -124,7 +110,7 @@ gethash(void)
 	return hash;
 }
 
-static void
+void
 readpw(Display *dpy, struct xrandr *rr, struct lock **locks, int nscreens,
        const char *hash)
 {
@@ -231,7 +217,7 @@ readpw(Display *dpy, struct xrandr *rr, struct lock **locks, int nscreens,
 	}
 }
 
-static struct lock *
+struct lock *
 lockscreen(Display *dpy, struct xrandr *rr, int screen)
 {
 	char curs[] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -308,99 +294,8 @@ lockscreen(Display *dpy, struct xrandr *rr, int screen)
 	return NULL;
 }
 
-static void
+void
 usage(void)
 {
 	die("usage: slock [-v] [cmd [arg ...]]\n");
-}
-
-int
-main(int argc, char **argv) {
-	struct xrandr rr;
-	struct lock **locks;
-	struct passwd *pwd;
-	struct group *grp;
-	uid_t duid;
-	gid_t dgid;
-	const char *hash;
-	Display *dpy;
-	int s, nlocks, nscreens;
-
-	ARGBEGIN {
-	case 'v':
-		fprintf(stderr, "slock-"VERSION"\n");
-		return 0;
-	default:
-		usage();
-	} ARGEND
-
-	/* validate drop-user and -group */
-	errno = 0;
-	if (!(pwd = getpwnam(user)))
-		die("slock: getpwnam %s: %s\n", user,
-		    errno ? strerror(errno) : "user entry not found");
-	duid = pwd->pw_uid;
-	errno = 0;
-	if (!(grp = getgrnam(group)))
-		die("slock: getgrnam %s: %s\n", group,
-		    errno ? strerror(errno) : "group entry not found");
-	dgid = grp->gr_gid;
-
-#ifdef __linux__
-	dontkillme();
-#endif
-
-	hash = gethash();
-	errno = 0;
-	if (!crypt("", hash))
-		die("slock: crypt: %s\n", strerror(errno));
-
-	if (!(dpy = XOpenDisplay(NULL)))
-		die("slock: cannot open display\n");
-
-	/* drop privileges */
-	if (setgroups(0, NULL) < 0)
-		die("slock: setgroups: %s\n", strerror(errno));
-	if (setgid(dgid) < 0)
-		die("slock: setgid: %s\n", strerror(errno));
-	if (setuid(duid) < 0)
-		die("slock: setuid: %s\n", strerror(errno));
-
-	/* check for Xrandr support */
-	rr.active = XRRQueryExtension(dpy, &rr.evbase, &rr.errbase);
-
-	/* get number of screens in display "dpy" and blank them */
-	nscreens = ScreenCount(dpy);
-	if (!(locks = calloc(nscreens, sizeof(struct lock *))))
-		die("slock: out of memory\n");
-	for (nlocks = 0, s = 0; s < nscreens; s++) {
-		if ((locks[s] = lockscreen(dpy, &rr, s)) != NULL)
-			nlocks++;
-		else
-			break;
-	}
-	XSync(dpy, 0);
-
-	/* did we manage to lock everything? */
-	if (nlocks != nscreens)
-		return 1;
-
-	/* run post-lock command */
-	if (argc > 0) {
-		switch (fork()) {
-		case -1:
-			die("slock: fork failed: %s\n", strerror(errno));
-		case 0:
-			if (close(ConnectionNumber(dpy)) < 0)
-				die("slock: close: %s\n", strerror(errno));
-			execvp(argv[0], argv);
-			fprintf(stderr, "slock: execvp %s: %s\n", argv[0], strerror(errno));
-			_exit(1);
-		}
-	}
-
-	/* everything is now blank. Wait for the correct password */
-	readpw(dpy, &rr, locks, nscreens, hash);
-
-	return 0;
 }
