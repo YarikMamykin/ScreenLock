@@ -3,18 +3,17 @@
 #include <config.h>
 #include <util.h>
 
-int
-main(int argc, char **argv) {
-	struct xrandr rr;
-	struct lock **locks;
-	struct passwd *pwd;
-	struct group *grp;
-	uid_t duid;
-	gid_t dgid;
-	const char *hash;
-	Display *dpy;
-	int s, nlocks, nscreens;
+struct xrandr rr;
+struct lock **locks;
+struct passwd *pwd;
+struct group *grp;
+uid_t duid;
+gid_t dgid;
+const char *hash;
+Display *dpy;
+int s, nlocks, nscreens;
 
+void get_user_data() {
 	/* validate drop-user and -group */
 	errno = 0;
 	if (!(pwd = getpwnam(user)))
@@ -27,18 +26,14 @@ main(int argc, char **argv) {
 		    errno ? strerror(errno) : "group entry not found");
 	dgid = grp->gr_gid;
 
-#ifdef __linux__
-	dontkillme();
-#endif
-
 	hash = gethash();
 	errno = 0;
 	if (!crypt("", hash))
 		die("slock: crypt: %s\n", strerror(errno));
 
-	if (!(dpy = XOpenDisplay(NULL)))
-		die("slock: cannot open display\n");
+}
 
+void drop_privileges() {
 	/* drop privileges */
 	if (setgroups(0, NULL) < 0)
 		die("slock: setgroups: %s\n", strerror(errno));
@@ -46,6 +41,11 @@ main(int argc, char **argv) {
 		die("slock: setgid: %s\n", strerror(errno));
 	if (setuid(duid) < 0)
 		die("slock: setuid: %s\n", strerror(errno));
+}
+
+void run_ui() {
+	if (!(dpy = XOpenDisplay(NULL)))
+		die("slock: cannot open display\n");
 
 	/* check for Xrandr support */
 	rr.active = XRRQueryExtension(dpy, &rr.evbase, &rr.errbase);
@@ -64,21 +64,36 @@ main(int argc, char **argv) {
 
 	/* did we manage to lock everything? */
 	if (nlocks != nscreens)
-		return 1;
+		exit(1);
+}
 
+void manage_subprocess() {
 	/* run post-lock command */
-	if (argc > 0) {
-		switch (fork()) {
-		case -1:
-			die("slock: fork failed: %s\n", strerror(errno));
-		case 0:
-			if (close(ConnectionNumber(dpy)) < 0)
-				die("slock: close: %s\n", strerror(errno));
-			execvp(argv[0], argv);
-			fprintf(stderr, "slock: execvp %s: %s\n", argv[0], strerror(errno));
-			_exit(1);
-		}
-	}
+	/* if (argc > 0) { */
+		/* switch (fork()) { */
+		/* case -1: */
+			/* die("slock: fork failed: %s\n", strerror(errno)); */
+		/* case 0: */
+			/* if (close(ConnectionNumber(dpy)) < 0) */
+				/* die("slock: close: %s\n", strerror(errno)); */
+			/* execvp(argv[0], argv); */
+			/* fprintf(stderr, "slock: execvp %s: %s\n", argv[0], strerror(errno)); */
+			/* _exit(1); */
+		/* } */
+	/* } */
+}
+
+int main(int argc, char **argv) {
+
+	get_user_data();
+
+#ifdef __linux__
+	dontkillme();
+#endif
+
+	drop_privileges();
+
+	run_ui();
 
 	/* everything is now blank. Wait for the correct password */
 	readpw(dpy, &rr, locks, nscreens, hash);
