@@ -13,6 +13,7 @@ include_directories(${X11_INCLUDE_DIR})
 include_directories(utils)
 include_directories(config)
 include_directories(arg)
+include_directories(locker)
 add_subdirectory(locker)
 
 add_executable(${PROJECT_NAME} main.c)
