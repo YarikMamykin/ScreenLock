@@ -35,14 +35,6 @@ main(int argc, char **argv) {
 	Display *dpy;
 	int s, nlocks, nscreens;
 
-	ARGBEGIN {
-	case 'v':
-		/* fprintf(stderr, "slock-"VERSION"\n"); */
-		return 0;
-	default:
-		usage();
-	} ARGEND
-
 	/* validate drop-user and -group */
 	errno = 0;
 	if (!(pwd = getpwnam(user)))
