@@ -14,7 +14,12 @@ include_directories(utils)
 include_directories(config)
 include_directories(arg)
 include_directories(locker)
+include_directories(user)
+include_directories(helpers)
+
 add_subdirectory(locker)
+add_subdirectory(user)
+add_subdirectory(helpers)
 
 add_executable(${PROJECT_NAME} main.c)
-target_link_libraries(${PROJECT_NAME} locker_lib)
+target_link_libraries(${PROJECT_NAME} locker_lib user_lib helpers_lib)
