@@ -14,10 +14,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-const char * gethash(void);
-void dontkillme(void);
-void die(const char *errstr, ...);
 void readpw(Display *dpy, struct xrandr *rr, struct lock **locks, int nscreens, const char *hash);
 struct lock * lockscreen(Display *dpy, struct xrandr *rr, int screen);
-void usage(void);
 

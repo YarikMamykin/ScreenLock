@@ -21,6 +21,7 @@
 
 #include <util.h>
 #include <config.h>
+#include <helpers.h>
 
 char *argv0;
 
@@ -32,83 +33,8 @@ struct lock {
 };
 
 
-void
-die(const char *errstr, ...)
-{
-	va_list ap;
 
-	va_start(ap, errstr);
-	vfprintf(stderr, errstr, ap);
-	va_end(ap);
-	exit(1);
-}
 
-#ifdef __linux__
-#include <fcntl.h>
-#include <linux/oom.h>
-
-void
-dontkillme(void)
-{
-	FILE *f;
-	const char oomfile[] = "/proc/self/oom_score_adj";
-
-	if (!(f = fopen(oomfile, "w"))) {
-		if (errno == ENOENT)
-			return;
-		die("slock: fopen %s: %s\n", oomfile, strerror(errno));
-	}
-	fprintf(f, "%d", OOM_SCORE_ADJ_MIN);
-	if (fclose(f)) {
-		if (errno == EACCES)
-			die("slock: unable to disable OOM killer. "
-			    "Make sure to suid or sgid slock.\n");
-		else
-			die("slock: fclose %s: %s\n", oomfile, strerror(errno));
-	}
-}
-#endif
-
-const char *
-gethash(void)
-{
-	const char *hash;
-	struct passwd *pw;
-
-	/* Check if the current user has a password entry */
-	errno = 0;
-	if (!(pw = getpwuid(getuid()))) {
-		if (errno)
-			die("slock: getpwuid: %s\n", strerror(errno));
-		else
-			die("slock: cannot retrieve password entry\n");
-	}
-	hash = pw->pw_passwd;
-
-#if HAVE_SHADOW_H
-	if (!strcmp(hash, "x")) {
-		struct spwd *sp;
-		if (!(sp = getspnam(pw->pw_name)))
-			die("slock: getspnam: cannot retrieve shadow entry. "
-			    "Make sure to suid or sgid slock.\n");
-		hash = sp->sp_pwdp;
-	}
-#else
-	if (!strcmp(hash, "*")) {
-#ifdef __OpenBSD__
-		if (!(pw = getpwuid_shadow(getuid())))
-			die("slock: getpwnam_shadow: cannot retrieve shadow entry. "
-			    "Make sure to suid or sgid slock.\n");
-		hash = pw->pw_passwd;
-#else
-		die("slock: getpwuid: cannot retrieve shadow entry. "
-		    "Make sure to suid or sgid slock.\n");
-#endif /* __OpenBSD__ */
-	}
-#endif /* HAVE_SHADOW_H */
-
-	return hash;
-}
 
 void
 readpw(Display *dpy, struct xrandr *rr, struct lock **locks, int nscreens,
@@ -294,8 +220,3 @@ lockscreen(Display *dpy, struct xrandr *rr, int screen)
 	return NULL;
 }
 
-void
-usage(void)
-{
-	die("usage: slock [-v] [cmd [arg ...]]\n");
-}
