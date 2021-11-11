@@ -1,8 +1,6 @@
 #pragma once
 #include <ctype.h>
 #include <errno.h>
-#include <grp.h>
-#include <pwd.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
