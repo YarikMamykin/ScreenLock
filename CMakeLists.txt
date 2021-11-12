@@ -16,10 +16,12 @@ include_directories(arg)
 include_directories(locker)
 include_directories(user)
 include_directories(helpers)
+include_directories(window)
 
 add_subdirectory(locker)
 add_subdirectory(user)
 add_subdirectory(helpers)
+add_subdirectory(window)
 
 add_executable(${PROJECT_NAME} main.c)
-target_link_libraries(${PROJECT_NAME} locker_lib user_lib helpers_lib)
+target_link_libraries(${PROJECT_NAME} locker_lib user_lib helpers_lib locking_window_lib)
