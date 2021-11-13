@@ -23,11 +23,15 @@ const char* init_xlib(struct locking_window* lw) {
 
 void free_xlib(struct locking_window* lw) {
 
-	XCloseDisplay(lw->dpy);
+	XUngrabPointer(lw->dpy, CurrentTime);
+	XUngrabKeyboard(lw->dpy, CurrentTime);
 
 	for(int i = 0; i < lw->nscreens; ++i) {
+		XDestroyWindow(lw->dpy, lw->locks[i]->win);
 		free(lw->locks[i]);
 	}
+
+	XCloseDisplay(lw->dpy);
 
 	free(lw->locks);
 	free(lw);
