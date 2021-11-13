@@ -125,6 +125,8 @@ const char* run_ui() {
 		return err_msg;
 	}
 
+	show_windows(lw);
+
 	free_xlib(lw);
 	return NULL;
 }
