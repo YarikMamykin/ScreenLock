@@ -1,3 +1,4 @@
+#include <X11/X.h>
 #include <locking_window.h>
 #include <stdlib.h>
 
@@ -91,6 +92,20 @@ const char* lock_all_screens(struct locking_window* lw) {
 	}
 
 	return NULL;
+}
+
+void show_windows(struct locking_window* lw) {
+
+	while(1) {
+		XEvent e;
+		XNextEvent(lw->dpy, &e);
+		switch(e.type) {
+			case KeyPress:
+				if(XK_Return == XLookupKeysym(&e.xkey, 0)) 
+					return;
+		}
+
+	}
 }
 
 const char* run_ui() {
