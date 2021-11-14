@@ -94,13 +94,26 @@ const char* lock_all_screens(struct locking_window* lw) {
 
 const char* update_password_input(XEvent* e) {
 
-	char* buf = (char*)calloc(4, sizeof(char));
+	const int buf_size = 32;
+	char* buf = (char*)alloca(buf_size);
 	KeySym ksym;
-	XLookupString(&e->xkey, buf, 4, &ksym, NULL);
-	printf("%s | %s\n", buf, XKeysymToString(ksym));
-	free(buf);
+	XLookupString(&e->xkey, buf, buf_size, &ksym, NULL);
+	
+	return XKeysymToString(ksym);
+}
 
-	return NULL;
+void draw_info(struct locking_window* lw, const char* info) {
+
+
+	for(int i = 0; i < lw->nscreens; ++i) {
+
+		GC gc = DefaultGC(lw->dpy, i);
+
+		XClearWindow(lw->dpy, lw->locks[i]->win);
+
+		XSetForeground(lw->dpy, gc, 255ul);
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,100, info, strlen(info));
+	}
 }
 
 void show_windows(struct locking_window* lw) {
@@ -116,10 +129,11 @@ void show_windows(struct locking_window* lw) {
 	while(1) {
 		XEvent e;
 		XNextEvent(lw->dpy, &e);
+
 		switch(e.type) {
 			case KeyPress:
 				{
-					update_password_input(&e);
+					draw_info(lw, update_password_input(&e));
 					if(XK_Return == XLookupKeysym(&e.xkey, 0)) 
 						return;
 				}
