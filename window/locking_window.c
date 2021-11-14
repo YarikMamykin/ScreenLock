@@ -1,4 +1,5 @@
 #include <X11/X.h>
+#include <X11/Xutil.h>
 #include <locking_window.h>
 #include <stdlib.h>
 
@@ -117,8 +118,11 @@ void show_windows(struct locking_window* lw) {
 		XNextEvent(lw->dpy, &e);
 		switch(e.type) {
 			case KeyPress:
-				if(XK_Return == XLookupKeysym(&e.xkey, 0)) 
-					return;
+				{
+					update_password_input(&e);
+					if(XK_Return == XLookupKeysym(&e.xkey, 0)) 
+						return;
+				}
 		}
 
 	}
