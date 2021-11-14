@@ -94,6 +94,17 @@ const char* lock_all_screens(struct locking_window* lw) {
 	return NULL;
 }
 
+const char* update_password_input(XEvent* e) {
+
+	char* buf = (char*)calloc(4, sizeof(char));
+	KeySym ksym;
+	XLookupString(&e->xkey, buf, 4, &ksym, NULL);
+	printf("%s | %s\n", buf, XKeysymToString(ksym));
+	free(buf);
+
+	return NULL;
+}
+
 void show_windows(struct locking_window* lw) {
 
 	while(1) {
