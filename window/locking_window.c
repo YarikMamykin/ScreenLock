@@ -77,9 +77,6 @@ const char* lockscreen(struct locking_window* lw, int screen) {
 
 	XSelectInput(lw->dpy, lw->locks[screen]->root, SubstructureNotifyMask);
 
-	XSetWindowBackground(lw->dpy, lw->locks[screen]->win, 0ul);
-	XClearWindow(lw->dpy, lw->locks[screen]->win);
-
 	return NULL;
 }
 
