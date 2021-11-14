@@ -107,6 +107,14 @@ const char* update_password_input(XEvent* e) {
 
 void show_windows(struct locking_window* lw) {
 
+	for(int i = 0; i < lw->nscreens; ++i) {
+		XSetWindowBackground(lw->dpy, lw->locks[i]->win, 0ul);
+		XClearWindow(lw->dpy, lw->locks[i]->win);
+
+		XRaiseWindow(lw->dpy, lw->locks[i]->win); 
+		XMapWindow(lw->dpy, lw->locks[i]->win);
+	}
+
 	while(1) {
 		XEvent e;
 		XNextEvent(lw->dpy, &e);
