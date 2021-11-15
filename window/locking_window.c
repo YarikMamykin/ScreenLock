@@ -158,6 +158,43 @@ void show_windows(struct locking_window* lw) {
 		XMapWindow(lw->dpy, lw->locks[i]->win);
 	}
 
+}
+
+struct password_input_handler {
+	char* input;
+	unsigned short inserted_chars;
+	const char* approved_hash;
+};
+
+void free_password_input(struct password_input_handler* pih) {
+	free(pih->input);
+	free(pih);
+}
+
+void reset_password_input(struct password_input_handler* pih) {
+	free(pih->input);
+	pih->input = (char*)calloc(32, sizeof(char));
+	pih->inserted_chars = 0;
+}
+
+void update_password_input(struct password_input_handler* pih, char input_char) {
+
+	if(pih->inserted_chars < 32) {
+		pih->input[pih->inserted_chars++] = input_char;
+		return;
+	}
+
+	reset_password_input(pih);
+}
+
+struct password_input_handler* init_password_input_handler(const char* hash) {
+	struct password_input_handler* pih = (struct password_input_handler*)calloc(1, sizeof(struct password_input_handler));
+	pih->input = (char*)calloc(32, sizeof(char));
+	pih->inserted_chars = 0;
+	pih->approved_hash = hash;
+	return pih;
+}
+
 	while(1) {
 		XEvent e;
 		XNextEvent(lw->dpy, &e);
