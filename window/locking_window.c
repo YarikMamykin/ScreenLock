@@ -188,6 +188,14 @@ void draw_input_stars(struct locking_window* lw, struct password_input_handler* 
 
 }
 
+void clear_windows(struct locking_window* lw) {
+
+	for(int i = 0; i < lw->nscreens; ++i) {
+		XClearWindow(lw->dpy, lw->locks[i]->win);
+	}
+
+}
+
 void process_events(struct locking_window* lw, struct user_data* ud) {
 
 	struct password_input_handler* pih = init_password_input_handler(ud->hash);
