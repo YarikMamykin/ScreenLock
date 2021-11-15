@@ -93,7 +93,7 @@ const char* lock_all_screens(struct locking_window* lw) {
 	return NULL;
 }
 
-const char* update_password_input(XEvent* e) {
+const char* get_input_info(XEvent* e) {
 
 	const int buf_size = 32;
 	char* buf = (char*)alloca(buf_size);
