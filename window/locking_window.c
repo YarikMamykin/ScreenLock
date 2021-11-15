@@ -4,6 +4,7 @@
 #include <locking_window.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <user_data.h>
 
 const char* init_xlib(struct locking_window* lw) {
@@ -224,6 +225,7 @@ void draw_greeting(struct locking_window* lw, const char* uname, unsigned long c
 		XDrawString(lw->dpy, lw->locks[i]->win, gc, screen_width/2 - text_width/2, screen_height/2 - text_height/2, (const char*)greeting_msg, greeting_msg_len);
 	}
 }
+
 void process_events(struct locking_window* lw, struct user_data* ud) {
 
 	struct password_input_handler* pih = init_password_input_handler(ud->hash);
@@ -235,13 +237,33 @@ void process_events(struct locking_window* lw, struct user_data* ud) {
 		switch(e->type) {
 			case KeyPress:
 				{
-					const char* input_info = get_input_info(e);
-					draw_info(lw, input_info);
-
 					switch(XLookupKeysym(&e->xkey, 0)) {
-						case XK_Return: free_password_input(pih); return;
-						case XK_Escape: reset_password_input(pih); break;
-						default: update_password_input(pih, get_input_char(e)); draw_hash_info(lw, crypt(pih->input, pih->approved_hash), pih->approved_hash, pih->input);
+						case XK_Escape: 
+							{
+								reset_password_input(pih); 
+								clear_windows(lw); 
+								break;
+							}
+
+						default: 
+							{
+								update_password_input(pih, get_input_char(e)); 
+								if(password_input_match(pih)) {
+									draw_greeting(lw, ud->pwd->pw_name, 255ul << 8);
+								} else {
+									draw_input_stars(lw, pih, 255ul);
+								}
+							}
+					}
+					break;
+				}
+
+			default:
+				{
+					if(password_input_match(pih)) {
+						usleep(700 * 1000); 
+						free_password_input(pih);
+						return;
 					}
 				}
 		}
