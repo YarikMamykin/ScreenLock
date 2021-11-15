@@ -165,6 +165,29 @@ struct password_input_handler* init_password_input_handler(const char* hash) {
 	return pih;
 }
 
+void draw_input_stars(struct locking_window* lw, struct password_input_handler* pih, unsigned long color) {
+
+	for(int i = 0; i < lw->nscreens; ++i) {
+
+		GC gc = DefaultGC(lw->dpy, i);
+
+		XClearWindow(lw->dpy, lw->locks[i]->win);
+
+		XSetForeground(lw->dpy, gc, color);
+
+		char* input_to_display[pih->inserted_chars];
+		memset(input_to_display, '*', pih->inserted_chars);
+
+		const int text_width = XTextWidth(lw->font_info, (const char*)input_to_display, pih->inserted_chars);
+		const int text_height = lw->font_info->ascent + lw->font_info->descent;
+		const int screen_width = XDisplayWidth(lw->dpy, i); 
+		const int screen_height = XDisplayHeight(lw->dpy, i);
+
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, screen_width/2 - text_width/2, screen_height/2 - text_height/2, (const char*)input_to_display, pih->inserted_chars);
+	}
+
+}
+
 void process_events(struct locking_window* lw, struct user_data* ud) {
 
 	struct password_input_handler* pih = init_password_input_handler(ud->hash);
