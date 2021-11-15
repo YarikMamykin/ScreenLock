@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <helpers.h>
 
-struct user_data* init_user_data() {
+struct user_data* init_user_data(uid_t uid) {
 
 	struct user_data* ud = (struct user_data*)calloc(1, sizeof(struct user_data));
 
@@ -15,24 +15,12 @@ struct user_data* init_user_data() {
 	}
 
 	errno = 0;
-	uid_t duid = getuid();
-	gid_t dgid = getgid();
-
-	if (!(ud->pwd = getpwuid(duid)))
+	if (!(ud->pwd = getpwuid(uid)))
 	{
 		free_user_data(ud);
-		die("slock: getpwuid %d: %s\n", duid,
+		die("slock: getpwuid %d: %s\n", uid,
 				errno ? strerror(errno) : "user entry not found");
 	}
-
-	errno = 0;
-	if (!(ud->grp = getgrgid(dgid)))
-	{
-		free_user_data(ud);
-		die("slock: getgrgid %d: %s\n", dgid,
-				errno ? strerror(errno) : "group entry not found");
-	}
-
 
 	ud->hash = ud->pwd->pw_passwd;
 
