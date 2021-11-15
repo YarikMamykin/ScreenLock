@@ -127,6 +127,27 @@ void draw_info(struct locking_window* lw, const char* info) {
 	}
 }
 
+void draw_hash_info(struct locking_window* lw, const char* info, const char* hash_to_be, const char* input) {
+
+
+	for(int i = 0; i < lw->nscreens; ++i) {
+
+		GC gc = DefaultGC(lw->dpy, i);
+
+		XClearWindow(lw->dpy, lw->locks[i]->win);
+
+		XSetForeground(lw->dpy, gc, 255ul);
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,200, info, strlen(info));
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,300, hash_to_be, strlen(hash_to_be));
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,400, input, strlen(input));
+
+		if(strcmp(hash_to_be, info) == 0)
+			XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,500, "YES!", 4);
+		else
+			XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,500, "NO!", 3);
+	}
+}
+
 void show_windows(struct locking_window* lw) {
 
 	for(int i = 0; i < lw->nscreens; ++i) {
