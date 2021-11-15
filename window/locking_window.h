@@ -12,6 +12,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <config.h>
+#include <user_data.h>
 
 struct lock {
 	int screen;
@@ -39,4 +40,4 @@ struct locking_window {
 const char* init_xlib(struct locking_window* lw);
 void free_xlib(struct locking_window* lw);
 const char* lock_all_screens(struct locking_window* lw);
-const char* run_ui();
+const char* run_ui(struct user_data* ud);
