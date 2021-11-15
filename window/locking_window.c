@@ -77,6 +77,7 @@ const char* lockscreen(struct locking_window* lw, int screen) {
 		XRRSelectInput(lw->dpy, lw->locks[screen]->win, RRScreenChangeNotifyMask);
 
 	XSelectInput(lw->dpy, lw->locks[screen]->root, SubstructureNotifyMask);
+	XSync(lw->dpy, 0);
 
 	return NULL;
 }
