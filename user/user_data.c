@@ -42,12 +42,7 @@ struct user_data* init_user_data(uid_t uid) {
 	}
 #endif 
 
-	errno = 0;
-	if (!crypt("", ud->hash))
-	{
-		free_user_data(ud);
-		die("slock: crypt: %s\n", strerror(errno));
-	}
+	ud->no_password = strlen(ud->hash) == 0;
 
 	drop_privileges(ud);
 	return ud;
