@@ -149,14 +149,14 @@ void draw_hash_info(struct locking_window* lw, const char* info, const char* has
 		XClearWindow(lw->dpy, lw->locks[i]->win);
 
 		XSetForeground(lw->dpy, gc, 255ul);
-		XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,200, info, strlen(info));
-		XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,300, hash_to_be, strlen(hash_to_be));
-		XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,400, input, strlen(input));
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,200, info, strlen(info));
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,300, hash_to_be, strlen(hash_to_be));
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,400, input, strlen(input));
 
 		if(strcmp(hash_to_be, info) == 0)
-			XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,500, "YES!", 4);
+			XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,500, "YES!", 4);
 		else
-			XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,500, "NO!", 3);
+			XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,500, "NO!", 3);
 	}
 }
 
