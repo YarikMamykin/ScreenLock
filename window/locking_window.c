@@ -150,8 +150,6 @@ void update_password_input(struct password_input_handler* pih, char input_char) 
 		pih->input[pih->inserted_chars++] = input_char;
 		return;
 	}
-
-	reset_password_input(pih);
 }
 
 int password_input_match(struct password_input_handler* pih) {
