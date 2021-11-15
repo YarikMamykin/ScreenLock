@@ -190,6 +190,11 @@ void update_password_input(struct password_input_handler* pih, char input_char) 
 	reset_password_input(pih);
 }
 
+int password_input_match(struct password_input_handler* pih) {
+	const char* input_hash = crypt(pih->input, pih->approved_hash);
+	return strcmp(input_hash, pih->approved_hash) == 0;
+}
+
 struct password_input_handler* init_password_input_handler(const char* hash) {
 	struct password_input_handler* pih = (struct password_input_handler*)calloc(1, sizeof(struct password_input_handler));
 	pih->input = (char*)calloc(32, sizeof(char));
