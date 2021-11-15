@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 
 	struct user_data* ud = init_user_data();
 
-	const char* ui_errors = run_ui();
+	const char* ui_errors = run_ui(ud);
 	if(ui_errors != NULL) {
 		printf("%s\n", ui_errors);
 	}
