@@ -10,13 +10,13 @@ void free_password_input(struct password_input_handler* pih) {
 
 void reset_password_input(struct password_input_handler* pih) {
 	free(pih->input);
-	pih->input = (char*)calloc(32, sizeof(char));
+	pih->input = (char*)calloc(pih->max_input_len, sizeof(char));
 	pih->inserted_chars = 0;
 }
 
 void update_password_input(struct password_input_handler* pih, char input_char) {
 
-	if(pih->inserted_chars < 32) {
+	if(pih->inserted_chars < pih->max_input_len) {
 		pih->input[pih->inserted_chars++] = input_char;
 		return;
 	}
@@ -29,7 +29,8 @@ int password_input_match(struct password_input_handler* pih) {
 
 struct password_input_handler* init_password_input_handler(const char* hash) {
 	struct password_input_handler* pih = (struct password_input_handler*)calloc(1, sizeof(struct password_input_handler));
-	pih->input = (char*)calloc(32, sizeof(char));
+	pih->max_input_len = 32;
+	pih->input = (char*)calloc(pih->max_input_len, sizeof(char));
 	pih->inserted_chars = 0;
 	pih->approved_hash = hash;
 	return pih;
