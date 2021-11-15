@@ -32,6 +32,7 @@ struct locking_window {
 	struct lock **locks;
 	Display *dpy;
 	int nscreens;
+	XFontStruct* font_info;
 
 };
 
