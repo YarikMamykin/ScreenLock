@@ -105,16 +105,6 @@ const char* lock_all_screens(struct locking_window* lw) {
 	return NULL;
 }
 
-const char* get_input_info(XEvent* e) {
-
-	const int buf_size = 32;
-	char* buf = (char*)alloca(buf_size);
-	KeySym ksym;
-	XLookupString(&e->xkey, buf, buf_size, &ksym, NULL);
-	
-	return XKeysymToString(ksym);
-}
-
 char get_input_char(XEvent* e) {
 
 	const int buf_size = 32;
@@ -123,41 +113,6 @@ char get_input_char(XEvent* e) {
 	XLookupString(&e->xkey, buf, buf_size, &ksym, NULL);
 	
 	return buf[0];
-}
-
-void draw_info(struct locking_window* lw, const char* info) {
-
-
-	for(int i = 0; i < lw->nscreens; ++i) {
-
-		GC gc = DefaultGC(lw->dpy, i);
-
-		XClearWindow(lw->dpy, lw->locks[i]->win);
-
-		XSetForeground(lw->dpy, gc, 255ul);
-		XDrawString(lw->dpy, lw->locks[i]->win, gc, 100,100, info, strlen(info));
-	}
-}
-
-void draw_hash_info(struct locking_window* lw, const char* info, const char* hash_to_be, const char* input) {
-
-
-	for(int i = 0; i < lw->nscreens; ++i) {
-
-		GC gc = DefaultGC(lw->dpy, i);
-
-		XClearWindow(lw->dpy, lw->locks[i]->win);
-
-		XSetForeground(lw->dpy, gc, 255ul);
-		XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,200, info, strlen(info));
-		XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,300, hash_to_be, strlen(hash_to_be));
-		XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,400, input, strlen(input));
-
-		if(strcmp(hash_to_be, info) == 0)
-			XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,500, "YES!", 4);
-		else
-			XDrawString(lw->dpy, lw->locks[i]->win, gc, 10,500, "NO!", 3);
-	}
 }
 
 void show_windows(struct locking_window* lw) {
