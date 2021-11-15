@@ -29,7 +29,7 @@ int password_input_match(struct password_input_handler* pih) {
 
 struct password_input_handler* init_password_input_handler(const char* hash) {
 	struct password_input_handler* pih = (struct password_input_handler*)calloc(1, sizeof(struct password_input_handler));
-	pih->max_input_len = 32;
+	*(unsigned short*)&pih->max_input_len = 32;
 	pih->input = (char*)calloc(pih->max_input_len, sizeof(char));
 	pih->inserted_chars = 0;
 	pih->approved_hash = hash;

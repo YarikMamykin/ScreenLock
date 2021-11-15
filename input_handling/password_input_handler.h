@@ -4,7 +4,7 @@ struct password_input_handler {
 	char* input;
 	unsigned short inserted_chars;
 	const char* approved_hash;
-	unsigned short max_input_len;
+	const unsigned short max_input_len;
 };
 
 void free_password_input(struct password_input_handler* pih);
