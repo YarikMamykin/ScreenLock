@@ -279,7 +279,7 @@ void process_events(struct locking_window* lw, struct user_data* ud) {
 
 			default:
 				{
-					if(password_input_match(pih)) {
+					if(!ud->no_password && password_input_match(pih)) {
 						usleep(700 * 1000); 
 						free_password_input(pih);
 						return;
