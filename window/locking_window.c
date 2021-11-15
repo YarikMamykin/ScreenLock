@@ -23,6 +23,13 @@ const char* init_xlib(struct locking_window* lw) {
 		return "slock: out of memory\n";
 	}
 
+	lw->font_info = XLoadQueryFont(lw->dpy, "*-20-*");
+	if(lw->font_info) {
+		for(int i = 0; i < lw->nscreens; ++i) {
+			XSetFont(lw->dpy, DefaultGC(lw->dpy, i), lw->font_info->fid);
+		}
+	}
+
 	return NULL;
 }
 
@@ -30,6 +37,8 @@ void free_xlib(struct locking_window* lw) {
 
 	XUngrabPointer(lw->dpy, CurrentTime);
 	XUngrabKeyboard(lw->dpy, CurrentTime);
+
+	XFreeFont(lw->dpy, lw->font_info);
 
 	for(int i = 0; i < lw->nscreens; ++i) {
 		XDestroyWindow(lw->dpy, lw->locks[i]->win);
