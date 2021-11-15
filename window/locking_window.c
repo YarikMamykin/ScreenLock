@@ -23,7 +23,7 @@ const char* init_xlib(struct locking_window* lw) {
 		return "slock: out of memory\n";
 	}
 
-	lw->font_info = XLoadQueryFont(lw->dpy, "*-20-*");
+	lw->font_info = XLoadQueryFont(lw->dpy, "*-25-*");
 	if(lw->font_info) {
 		for(int i = 0; i < lw->nscreens; ++i) {
 			XSetFont(lw->dpy, DefaultGC(lw->dpy, i), lw->font_info->fid);
