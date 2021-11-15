@@ -172,6 +172,28 @@ void draw_input(struct locking_window* lw, struct password_input_handler* pih, u
 
 }
 
+void draw_start_message(struct locking_window* lw, struct user_data* ud, unsigned long color) {
+
+	for(int i = 0; i < lw->nscreens; ++i) {
+
+		GC gc = DefaultGC(lw->dpy, i);
+
+		XClearWindow(lw->dpy, lw->locks[i]->win);
+
+		XSetForeground(lw->dpy, gc, color);
+
+		const char* start_message = ud->no_password ? "Press any key to unlock..." : "Waiting for user input...";
+
+		const int text_width = XTextWidth(lw->font_info, start_message, strlen(start_message));
+		const int text_height = lw->font_info->ascent + lw->font_info->descent;
+		const int screen_width = XDisplayWidth(lw->dpy, i); 
+		const int screen_height = XDisplayHeight(lw->dpy, i);
+
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, screen_width/2 - text_width/2, screen_height/2 - text_height/2, start_message, strlen(start_message));
+	}
+
+}
+
 void clear_windows(struct locking_window* lw) {
 
 	for(int i = 0; i < lw->nscreens; ++i) {
@@ -219,6 +241,7 @@ void draw_input_info(struct locking_window* lw, struct password_input_handler* p
 void process_events(struct locking_window* lw, struct user_data* ud) {
 
 	struct password_input_handler* pih = init_password_input_handler(ud->hash);
+	draw_start_message(lw, ud, 255ul);
 
 	while(1) {
 		XEvent* e = (XEvent*)alloca(sizeof(XEvent));
