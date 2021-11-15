@@ -1,4 +1,3 @@
-/* #include <screen_locker.h> */
 #include <user_data.h>
 #include <arg.h>
 #include <config.h>
@@ -13,15 +12,15 @@ int main(int argc, char **argv) {
 	dontkillme();
 #endif
 
-	struct user_data* ud = init_user_data();
+	uid_t uid = -1;
+	printf("UID->");
+	scanf("%u", &uid);
+	struct user_data* ud = init_user_data(uid);
 
 	const char* ui_errors = run_ui(ud);
 	if(ui_errors != NULL) {
 		printf("%s\n", ui_errors);
 	}
-
-	/* everything is now blank. Wait for the correct password */
-	/* readpw(dpy, &rr, locks, nscreens, hash); */
 
 	free_user_data(ud);
 	return 0;
