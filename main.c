@@ -13,7 +13,6 @@ int main(int argc, char **argv) {
 #endif
 
 	uid_t uid = -1;
-	printf("UID->");
 	scanf("%u", &uid);
 	struct user_data* ud = init_user_data(uid);
 
