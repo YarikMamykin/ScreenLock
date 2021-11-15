@@ -252,6 +252,7 @@ void process_events(struct locking_window* lw, struct user_data* ud) {
 const char* run_ui(struct user_data* ud) {
 	
 	struct locking_window* lw = (struct locking_window*)calloc(1, sizeof(struct locking_window));
+	lw->font_info = NULL;
 	const char* err_msg = init_xlib(lw);
 
 	if(err_msg != NULL) {
