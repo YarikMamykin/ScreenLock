@@ -1,7 +1,10 @@
 #include <X11/X.h>
+#include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <locking_window.h>
 #include <stdlib.h>
+#include <string.h>
+#include <user_data.h>
 
 const char* init_xlib(struct locking_window* lw) {
 
@@ -195,23 +198,32 @@ struct password_input_handler* init_password_input_handler(const char* hash) {
 	return pih;
 }
 
-	while(1) {
-		XEvent e;
-		XNextEvent(lw->dpy, &e);
+void process_events(struct locking_window* lw, struct user_data* ud) {
 
-		switch(e.type) {
+	struct password_input_handler* pih = init_password_input_handler(ud->hash);
+
+	while(1) {
+		XEvent* e = (XEvent*)alloca(sizeof(XEvent));
+		XNextEvent(lw->dpy, e);
+
+		switch(e->type) {
 			case KeyPress:
 				{
-					draw_info(lw, update_password_input(&e));
-					if(XK_Return == XLookupKeysym(&e.xkey, 0)) 
-						return;
+					const char* input_info = get_input_info(e);
+					draw_info(lw, input_info);
+
+					switch(XLookupKeysym(&e->xkey, 0)) {
+						case XK_Return: free_password_input(pih); return;
+						case XK_Escape: reset_password_input(pih); break;
+						default: update_password_input(pih, get_input_char(e)); draw_hash_info(lw, crypt(pih->input, pih->approved_hash), pih->approved_hash, pih->input);
+					}
 				}
 		}
 
 	}
 }
 
-const char* run_ui() {
+const char* run_ui(struct user_data* ud) {
 	
 	struct locking_window* lw = (struct locking_window*)calloc(1, sizeof(struct locking_window));
 	const char* err_msg = init_xlib(lw);
@@ -229,6 +241,8 @@ const char* run_ui() {
 	}
 
 	show_windows(lw);
+
+	process_events(lw, ud);
 
 	free_xlib(lw);
 	return NULL;
