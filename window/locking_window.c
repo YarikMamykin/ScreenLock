@@ -260,6 +260,7 @@ void process_events(struct locking_window* lw, struct user_data* ud) {
 							{
 								reset_password_input(pih); 
 								clear_windows(lw); 
+								draw_start_message(lw, ud, 255ul);
 								break;
 							}
 
