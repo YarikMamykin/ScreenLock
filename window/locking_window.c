@@ -196,6 +196,34 @@ void clear_windows(struct locking_window* lw) {
 
 }
 
+void draw_greeting(struct locking_window* lw, const char* uname, unsigned long color) {
+
+	for(int i = 0; i < lw->nscreens; ++i) {
+
+		GC gc = DefaultGC(lw->dpy, i);
+
+		XClearWindow(lw->dpy, lw->locks[i]->win);
+
+		XSetForeground(lw->dpy, gc, color);
+
+		const char* greeting_msg_base = "Hello there, "; // stands before uname
+		const char* greeting_msg_end = "!"; // stands after uname
+
+		const unsigned int greeting_msg_size = strlen(greeting_msg_base) + strlen(uname) + strlen(greeting_msg_end);
+		char* greeting_msg = (char*)alloca(greeting_msg_size);
+		memset(greeting_msg, 0, greeting_msg_size);
+
+		sprintf(greeting_msg, "%s%s%s", greeting_msg_base, uname, greeting_msg_end);
+		const int greeting_msg_len = strlen(greeting_msg);
+
+		const int text_width = XTextWidth(lw->font_info, (const char*)greeting_msg, greeting_msg_len);
+		const int text_height = lw->font_info->ascent + lw->font_info->descent;
+		const int screen_width = XDisplayWidth(lw->dpy, i); 
+		const int screen_height = XDisplayHeight(lw->dpy, i);
+
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, screen_width/2 - text_width/2, screen_height/2 - text_height/2, (const char*)greeting_msg, greeting_msg_len);
+	}
+}
 void process_events(struct locking_window* lw, struct user_data* ud) {
 
 	struct password_input_handler* pih = init_password_input_handler(ud->hash);
