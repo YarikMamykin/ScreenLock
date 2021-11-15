@@ -103,6 +103,16 @@ const char* get_input_info(XEvent* e) {
 	return XKeysymToString(ksym);
 }
 
+char get_input_char(XEvent* e) {
+
+	const int buf_size = 32;
+	char* buf = (char*)alloca(buf_size);
+	KeySym ksym;
+	XLookupString(&e->xkey, buf, buf_size, &ksym, NULL);
+	
+	return buf[0];
+}
+
 void draw_info(struct locking_window* lw, const char* info) {
 
 
