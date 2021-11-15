@@ -152,6 +152,26 @@ void draw_input_stars(struct locking_window* lw, struct password_input_handler* 
 
 }
 
+void draw_input(struct locking_window* lw, struct password_input_handler* pih, unsigned long color) {
+
+	for(int i = 0; i < lw->nscreens; ++i) {
+
+		GC gc = DefaultGC(lw->dpy, i);
+
+		XClearWindow(lw->dpy, lw->locks[i]->win);
+
+		XSetForeground(lw->dpy, gc, color);
+
+		const int text_width = XTextWidth(lw->font_info, (const char*)pih->input, pih->inserted_chars);
+		const int text_height = lw->font_info->ascent + lw->font_info->descent;
+		const int screen_width = XDisplayWidth(lw->dpy, i); 
+		const int screen_height = XDisplayHeight(lw->dpy, i);
+
+		XDrawString(lw->dpy, lw->locks[i]->win, gc, screen_width/2 - text_width/2, screen_height/2 - text_height/2, (const char*)pih->input, pih->inserted_chars);
+	}
+
+}
+
 void clear_windows(struct locking_window* lw) {
 
 	for(int i = 0; i < lw->nscreens; ++i) {
@@ -189,6 +209,13 @@ void draw_greeting(struct locking_window* lw, const char* uname, unsigned long c
 	}
 }
 
+void draw_input_info(struct locking_window* lw, struct password_input_handler* pih, unsigned long color) {
+	if(pih->view_mode == NATIVE)
+		draw_input_stars(lw, pih, color);
+	else
+		draw_input(lw, pih, color);
+}
+
 void process_events(struct locking_window* lw, struct user_data* ud) {
 
 	struct password_input_handler* pih = init_password_input_handler(ud->hash);
@@ -208,14 +235,20 @@ void process_events(struct locking_window* lw, struct user_data* ud) {
 								break;
 							}
 
+						case XK_v:
+							{
+									pih->view_mode = pih->view_mode == NATIVE ? SECURED : NATIVE;
+									draw_input_info(lw, pih, 255ul);
+									break;
+							}
+
 						default: 
 							{
 								update_password_input(pih, get_input_char(e)); 
-								if(password_input_match(pih)) {
+								if(password_input_match(pih)) 
 									draw_greeting(lw, ud->pwd->pw_name, 255ul << 8);
-								} else {
-									draw_input_stars(lw, pih, 255ul);
-								}
+								else 
+									draw_input_info(lw, pih, 255ul);
 							}
 					}
 					break;

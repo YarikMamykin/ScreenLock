@@ -1,10 +1,16 @@
 #pragma once
 
+enum INPUT_VIEW_MODE {
+	NATIVE,
+	SECURED
+};
+
 struct password_input_handler {
 	char* input;
 	unsigned short inserted_chars;
 	const char* approved_hash;
 	const unsigned short max_input_len;
+	enum INPUT_VIEW_MODE view_mode;
 };
 
 void free_password_input(struct password_input_handler* pih);

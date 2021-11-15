@@ -33,6 +33,7 @@ struct password_input_handler* init_password_input_handler(const char* hash) {
 	pih->input = (char*)calloc(pih->max_input_len, sizeof(char));
 	pih->inserted_chars = 0;
 	pih->approved_hash = hash;
+	pih->view_mode = NATIVE;
 	return pih;
 }
 
