@@ -250,6 +250,11 @@ void process_events(struct locking_window* lw, struct user_data* ud) {
 		switch(e->type) {
 			case KeyPress:
 				{
+					if(ud->no_password) {
+						free_password_input(pih);
+						return;
+					}
+
 					switch(XLookupKeysym(&e->xkey, 0)) {
 						case XK_Escape: 
 							{
