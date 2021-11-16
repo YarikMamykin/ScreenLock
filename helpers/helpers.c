@@ -33,7 +33,3 @@ void dontkillme(void) {
 			die("slock: fclose %s: %s\n", oomfile, strerror(errno));
 	}
 }
-
-void usage(void) {
-	die("usage: slock [-v] [cmd [arg ...]]\n");
-}

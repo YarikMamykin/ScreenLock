@@ -6,4 +6,3 @@
 
 void die(const char *errstr, ...);
 void dontkillme(void);
-void usage(void);
