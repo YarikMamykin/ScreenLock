@@ -12,9 +12,7 @@ int main(int argc, char **argv) {
 	dontkillme();
 #endif
 
-	uid_t uid = -1;
-	scanf("%u", &uid);
-	struct user_data* ud = init_user_data(uid);
+	struct user_data* ud = init_user_data(getuid());
 
 	const char* ui_errors = run_ui(ud);
 	if(ui_errors != NULL) {
