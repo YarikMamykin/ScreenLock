@@ -11,7 +11,7 @@
 const char* init_xlib(struct locking_window* lw) {
 
 	if (!(lw->dpy = XOpenDisplay(NULL))) {
-		return "slock: cannot open display\n";
+		return "Cannot open display\n";
 	}
 
 	/* check for Xrandr support */
@@ -22,7 +22,7 @@ const char* init_xlib(struct locking_window* lw) {
 	printf("Number of screens: %d\n", lw->nscreens);
 
 	if (!(lw->locks = calloc(lw->nscreens, sizeof(struct lock *)))) {
-		return "slock: out of memory\n";
+		return "Out of memory\n";
 	}
 
 	lw->font_info = XLoadQueryFont(lw->dpy, "*-25-*");

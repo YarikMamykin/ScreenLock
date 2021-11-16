@@ -74,7 +74,7 @@
 				/* passwd[len] = '\0'; */
 				/* errno = 0; */
 				/* if (!(inputhash = crypt(passwd, hash))) */
-					/* fprintf(stderr, "slock: crypt: %s\n", strerror(errno)); */
+					/* fprintf(stderr, " crypt: %s\n", strerror(errno)); */
 				/* else */
 					/* running = !!strcmp(inputhash, hash); */
 				/* if (running) { */
@@ -201,10 +201,10 @@
 
 	/* [> we couldn't grab all input: fail out <] */
 	/* if (ptgrab != GrabSuccess) */
-		/* fprintf(stderr, "slock: unable to grab mouse pointer for screen %d\n", */
+		/* fprintf(stderr, " unable to grab mouse pointer for screen %d\n", */
 						/* screen); */
 	/* if (kbgrab != GrabSuccess) */
-		/* fprintf(stderr, "slock: unable to grab keyboard for screen %d\n", */
+		/* fprintf(stderr, " unable to grab keyboard for screen %d\n", */
 						/* screen); */
 	/* return NULL; */
 /* } */
