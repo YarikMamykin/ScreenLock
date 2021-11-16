@@ -5,7 +5,7 @@ set(CMAKE_C_FLAGS "-g -std=c99 -pedantic -Wall -Os -D_DEFAULT_SOURCE -DHAVE_SHAD
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_INSTALL_PREFIX "/usr/bin")
 
-project(ScreenLocker)
+project(screen_lock)
 
 find_package(X11 REQUIRED)
 link_libraries(${X11_LIBRARIES})
