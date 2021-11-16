@@ -266,9 +266,11 @@ void process_events(struct locking_window* lw, struct user_data* ud) {
 
 						case XK_v:
 							{
+								if(e->xkey.state & ControlMask) {
 									pih->view_mode = pih->view_mode == NATIVE ? SECURED : NATIVE;
 									draw_input_info(lw, pih, 255ul);
 									break;
+								}
 							}
 
 						default: 
