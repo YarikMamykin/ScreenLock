@@ -1,6 +1,7 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <alloca.h>
 #include <locking_window.h>
 #include <stdlib.h>
 #include <string.h>
