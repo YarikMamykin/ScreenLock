@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 set(CMAKE_C_COMPILER "/usr/bin/cc")
-set(CMAKE_C_FLAGS "-g -std=c99 -pedantic -Wall -Os -D_DEFAULT_SOURCE -DHAVE_SHADOW_H -lc -lcrypt -lXext -lXrandr")
+set(CMAKE_C_FLAGS "-g -std=c99 -pedantic -Wall -Os")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(screen_lock)
@@ -24,7 +24,16 @@ add_subdirectory(window)
 add_subdirectory(input_handling)
 
 add_executable(${PROJECT_NAME} main.c)
-target_link_libraries(${PROJECT_NAME} user_lib helpers_lib locking_window_lib password_input_handler_lib)
+target_link_libraries(${PROJECT_NAME} 
+	user_lib 
+	helpers_lib 
+	locking_window_lib 
+	password_input_handler_lib
+	c
+	crypt
+	Xext
+	Xrandr
+)
 
 set(CMAKE_INSTALL_PREFIX /usr/bin)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX})
