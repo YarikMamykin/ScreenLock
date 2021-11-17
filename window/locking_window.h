@@ -11,14 +11,12 @@
 #include <X11/keysym.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <config.h>
 #include <user_data.h>
 
 struct lock {
 	int screen;
 	Window root, win;
 	Pixmap pmap;
-	unsigned long colors[NUMCOLS];
 };
 
 struct xrandr {

@@ -1,6 +1,5 @@
 #include <user_data.h>
 #include <arg.h>
-#include <config.h>
 #include <unistd.h>
 #include <util.h>
 #include <helpers.h>
