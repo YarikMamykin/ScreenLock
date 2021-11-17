@@ -10,7 +10,7 @@ struct user_data {
 	bool no_password;
 };
 
-struct user_data* init_user_data(uid_t uid);
+struct user_data* init_user_data(int uid);
 void free_user_data(struct user_data* ud);
 
 void drop_privileges(struct user_data* ud);

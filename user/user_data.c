@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <helpers.h>
 
-struct user_data* init_user_data(uid_t uid) {
+struct user_data* init_user_data(int uid) {
 
 	struct user_data* ud = (struct user_data*)calloc(1, sizeof(struct user_data));
 
