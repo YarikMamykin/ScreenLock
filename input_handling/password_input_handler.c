@@ -16,7 +16,7 @@ void reset_password_input(struct password_input_handler* pih) {
 
 void update_password_input(struct password_input_handler* pih, char input_char) {
 
-	if(pih->inserted_chars < pih->max_input_len) {
+	if(pih->inserted_chars < pih->max_input_len && input_char != 0) {
 		pih->input[pih->inserted_chars++] = input_char;
 		return;
 	}
