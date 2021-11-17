@@ -24,7 +24,6 @@ struct user_data* init_user_data(int uid) {
 
 	ud->hash = ud->pwd->pw_passwd;
 
-#if HAVE_SHADOW_H
 	if (!strcmp(ud->hash, "x")) {
 		struct spwd *sp;
 		if (!(sp = getspnam(ud->pwd->pw_name))) {
@@ -34,13 +33,6 @@ struct user_data* init_user_data(int uid) {
 		}
 		ud->hash = sp->sp_pwdp;
 	}
-#else
-	if (!strcmp(ud->hash, "*")) {
-		free_user_data(ud);
-		die("getpwuid: cannot retrieve shadow entry. "
-		    "Make sure to suid or sgid .\n");
-	}
-#endif 
 
 	ud->no_password = strlen(ud->hash) == 0;
 
@@ -53,11 +45,6 @@ void free_user_data(struct user_data* ud) {
 }
 
 void drop_privileges(struct user_data* ud) {
-
-	if (setgroups(0, NULL) < 0) {
-		free_user_data(ud);
-		die("setgroups: %s\n", strerror(errno));
-	}
 
 	if (setgid(ud->pwd->pw_gid) < 0) {
 		free_user_data(ud);
