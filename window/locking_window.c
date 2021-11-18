@@ -256,32 +256,42 @@ void process_events(struct locking_window* lw, struct user_data* ud) {
 						return;
 					}
 
-					switch(XLookupKeysym(&e->xkey, 0)) {
-						case XK_Escape: 
-							{
-								reset_password_input(pih); 
-								clear_windows(lw); 
-								draw_start_message(lw, ud, 255ul);
-								break;
-							}
+					int key_sym = XLookupKeysym(&e->xkey, 0);
 
-						case XK_v:
-							{
-								if(e->xkey.state & ControlMask) {
+					if(e->xkey.state & ControlMask) {
+
+						switch(key_sym) {
+
+							case XK_v:
+								{
 									pih->view_mode = pih->view_mode == NATIVE ? SECURED : NATIVE;
 									draw_input_info(lw, pih, 255ul);
 									break;
 								}
-							}
 
-						default: 
-							{
-								update_password_input(pih, get_input_char(e)); 
-								if(password_input_match(pih)) 
-									draw_greeting(lw, ud->pwd->pw_name, 255ul << 8);
-								else 
-									draw_input_info(lw, pih, 255ul);
-							}
+						}
+					} else {
+
+						switch(key_sym) {
+
+							case XK_Escape: 
+								{
+									reset_password_input(pih); 
+									clear_windows(lw); 
+									draw_start_message(lw, ud, 255ul);
+									break;
+								}
+
+							default: 
+								{
+									update_password_input(pih, get_input_char(e)); 
+									if(password_input_match(pih)) 
+										draw_greeting(lw, ud->pwd->pw_name, 255ul << 8);
+									else 
+										draw_input_info(lw, pih, 255ul);
+								}
+						}
+
 					}
 					break;
 				}
