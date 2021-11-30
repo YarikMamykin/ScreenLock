@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(CMAKE_C_COMPILER "/usr/bin/cc")
-set(CMAKE_C_FLAGS "-g -std=c99 -pedantic -Wall -Os")
+set(CMAKE_C_COMPILER "/usr/bin/gcc")
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_FLAGS "-g -pedantic -Wall -Os")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(screen_lock)
