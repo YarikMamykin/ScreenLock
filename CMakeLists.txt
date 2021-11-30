@@ -37,5 +37,4 @@ target_link_libraries(${PROJECT_NAME}
 	Xrandr
 )
 
-set(CMAKE_INSTALL_PREFIX /usr/bin)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX})
