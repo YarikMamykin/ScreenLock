@@ -2,8 +2,9 @@ build:
   stage: build
   image: archlinux:latest
   script:
-    - pacman -Syy && pacman -S --noconfirm cmake make gcc10 libx11 glib2
+    - pacman -Syy && pacman -S --noconfirm cmake make gcc10 libx11 glib2 libxrandr
     - mkdir build
     - pushd build
-    - cmake .. && make
+    - cmake .. 
+    - make
     - popd
