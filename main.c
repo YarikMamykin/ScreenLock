@@ -7,10 +7,6 @@
 
 int main(int argc, char **argv) {
 
-#ifdef __linux__
-	dontkillme();
-#endif
-
 	struct user_data* ud = init_user_data(getuid());
 
 	const char* ui_errors = run_ui(ud);
