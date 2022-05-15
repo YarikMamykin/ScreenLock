@@ -3,13 +3,18 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_FLAGS "-g -pedantic -Wall -Os")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+add_link_options(
+	-pedantic 
+	-Wall 
+	-Wextra
+)
 
 project(screen_lock)
 
 find_package(X11 REQUIRED)
-link_libraries(${X11_LIBRARIES})
 include_directories(${X11_INCLUDE_DIR})
 
 include_directories(utils)
@@ -33,8 +38,8 @@ target_link_libraries(${PROJECT_NAME}
 	password_input_handler_lib
 	c
 	crypt
-	Xext
-	Xrandr
+	X11::Xext
+	X11::Xrandr
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX})
