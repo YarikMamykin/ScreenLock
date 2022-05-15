@@ -20,6 +20,8 @@ project(screen_lock)
 
 find_package(X11 REQUIRED)
 include_directories(${X11_INCLUDE_DIR})
+include_directories(${X11_Xrandr_INCLUDE_PATH})
+include_directories(${X11_Xext_INCLUDE_PATH})
 
 include_directories(utils)
 include_directories(config)
