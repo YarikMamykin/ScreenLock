@@ -4,7 +4,7 @@
 
 Simple screen locking program provides ability to lock desktop from undesired attention.
 
-![](./demo.gif)
+![](./demo.webp)
 
 ## Build
 
